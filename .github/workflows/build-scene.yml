@@ -1,0 +1,29 @@
+name: Build editable Blender scene
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/**', 'scenes/**', '.github/workflows/build-scene.yml']
+permissions:
+  contents: read
+jobs:
+  assemble:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: sudo apt-get update && sudo apt-get install -y libxi6 libxrender1 libxfixes3 libgl1 libxkbcommon0
+      - run: python -m pip install bpy==5.2.3
+      - run: python scripts/build_scene.py --plan scenes/example.json --output artifacts
+      - run: python scripts/check_scene.py --blend artifacts/scene.blend --plan scenes/example.json --report artifacts/validation.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: editable-blender-scene
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7

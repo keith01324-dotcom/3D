@@ -1,0 +1,10 @@
+# Merge after replacing command with your installed absolute path.
+[mcp_servers.blender]
+command = 'C:\REPLACE_WITH_INSTALLED_PATH\blender-mcp.exe'
+enabled = false
+startup_timeout_sec = 30
+
+[mcp_servers.blender.env]
+BLENDER_HOST = "127.0.0.1"
+BLENDER_PORT = "9876"
+DISABLE_TELEMETRY = "true"
